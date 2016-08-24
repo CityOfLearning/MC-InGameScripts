@@ -1,5 +1,6 @@
 os.loadAPI("utils/globe");
 os.loadAPI("utils/devices");
+os.loadAPI("utils/keylock");
 
 local item = "computercraft:disk";
 local player = "@p"
@@ -11,35 +12,10 @@ local function init()
 	  -- We don't care what the event returns, since the first variable will be "redstone" and the rest will be nil. 
 
 	  if event == "redstone" and rs.getInput("front") then
-	  	giveKey();
+	  	keylock.giveKey(player, item, quantity);
 	  else
 	  	print("Nope!");
 	  end
-	end
-end
-
-function giveKey(p,k,q)
-	_p = p or player;
-	_k = k or item;
-	_q = q or quantity;
-
-	if (testKey(_p, _k) == true) then
-		commands.exec("tell ".._p.." You already have this key!");
-	else
-		commands.exec("give ".._p.." ".._k.." ".._q);
-	end
-end
-
-function testKey(p,k)
-	_p = p or player;
-	_k = k or item;
-
-	local test = " {Inventory:[{id:".._k.."}]}";
-	
-	if (commands.exec("testfor ".._p..test) == true) then
-		return true;
-	else
-		return false;
 	end
 end
 
