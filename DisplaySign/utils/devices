@@ -1,0 +1,69 @@
+--Joshua R. Engel
+--Script for Peripheral Setup on Computers
+--Opens Rednet if a modem is found
+local dev_t = {};
+
+for n,m in ipairs(rs.getSides()) do
+  local _side = m;
+  local _pType = peripheral.getType(_side);
+  local _device = peripheral.wrap(_side);
+  
+  if _pType ~= nil then
+    local item = {};
+
+    item.type = _pType;
+    item.side = _side;
+    item.device = _device;
+    item.other = ""; 
+
+    --Setup the devices
+    if _pType == "modem" and rednet.isOpen(_side) ~= true then
+        rednet.open(_side);
+        item.other = "rednet";
+    end
+
+    table.insert(dev_t, item);
+  end
+end
+
+function getDev(d)
+  local _d = d;
+  for i=1, #dev_t do
+    if _d == dev_t[i].type then
+      return dev_t[i].device;
+    end
+  end 
+end
+
+function getDet(i)
+  local _i = i or 0;
+  if _i ~= 0 or nil then
+        print("Index: "..i..
+      "\nType: "..tostring(dev_t[i].type)..
+      "\nSide: "..tostring(dev_t[i].side)..
+      "\nDevice: "..tostring(dev_t[i].device)..
+      "\nOther: "..tostring(dev_t[i].other).."\n###"
+      )
+  else
+    for i=1, #dev_t do
+      print("Index: "..i..
+        "\nType: "..tostring(dev_t[i].type)..
+        "\nSide: "..tostring(dev_t[i].side)..
+        "\nDevice: "..tostring(dev_t[i].device)..
+        "\nOther: "..tostring(dev_t[i].other).."\n###"
+        )
+      end
+  end 
+end
+
+function viewAll(t)
+  local _t = t or dev_t;
+
+  if _t ~= nil then
+    for i, v in pairs(_t) do
+      print(i, v); 
+    end
+  else
+    print("Table Load Error");
+  end
+end

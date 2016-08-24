@@ -1,0 +1,81 @@
+--Storage for shared values
+local g_var = {};
+
+--Default Variables
+--Accessible Functions
+local function init()	
+	if fs.exists("../dataStore/CONSTANT_VARS.txt") then
+		
+		g_var = loadTable("../dataStore/CONSTANT_VARS.txt");
+	
+	else
+		--Fill the table content
+		--Computer ID
+		g_var["comID"] = os.getComputerID();
+		--Computer Label (if no label, make user set one)
+		if os.getComputerLabel() == "" or nil then
+			print("Enter Computer Label");
+			g_var["comLbl"] = read();
+			os.setComputerLabel(g_var["comLbl"]);
+			print("Lable accepted: "..g_var["comLbl"]);
+		else
+			g_var["comLbl"] = os.getComputerLabel();
+		end
+		--Latest edited time
+		g_var["lastEdit"] = tostring(os.day()).." : "..tostring(textutils.formatTime(os.time(), true));
+		print(g_var.lastEdit);
+
+		g_var["UID"] = tostring(g_var["comID"]).." | "..tostring(g_var["comLbl"]);
+		print(g_var["UID"]);
+		--Content Setup for Variables
+		g_var["content"] = {};
+		print(g_var["content"]);	
+
+		--Currently saves as "CONSTANT_VARS.txt" and saves the g_var table from above
+		saveTable();
+	end
+end
+
+--Setters
+function setVar(name, val)
+	g_var[name] = val;
+end
+
+--Getters
+function getVar(name)
+	return g_var[name];
+end
+
+function viewAll(t)
+	local _t = t or g_var;
+
+	if _t ~= nil then
+		for i, v in pairs(_t) do
+			print("Index: "..i.." | Value: "..v);	
+		end
+	else
+		print("Table Load Error");
+	end
+end
+--Requires Relative path
+function loadTable(name)
+	local file = fs.open(name,"r")
+	local data = file.readAll()
+	file.close()
+	return textutils.unserialize(data)
+end
+
+--Save the new one
+--Requires Absolute path
+function saveTable(table,name)
+	local t = table or g_var;
+	local n = name or "/dataStore/CONSTANT_VARS.txt";
+
+	local file = fs.open(n,"w")
+
+	file.write(textutils.serialize(t))
+	file.close()
+end
+
+
+init();
