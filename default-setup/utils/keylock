@@ -4,7 +4,7 @@ function giveKey(p,k,q)
 	_q = q or quantity;
 
 	if (testKey(_p, _k) == true) then
-		commands.exec("tell ".._p.." You already have this key!");
+		commands.exec("tell ".._p.." You already have this item!");
 	else
 		commands.exec("give ".._p.." ".._k.." ".._q);
 	end
